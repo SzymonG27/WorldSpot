@@ -15,6 +15,7 @@ namespace API.Data
 
         }
 
+        public DbSet<CommentModel> Comments { get; set; }
         public DbSet<EventModel> Events { get; set; }
         public DbSet<EventCommentModel> EventsComments { get; set; }
         public DbSet<EventTeamsRelationModel> EventTeamsRelations { get; set; }
