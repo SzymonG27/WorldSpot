@@ -4,7 +4,7 @@ namespace API.Services
 {
     public interface ITeamService
     {
-        Task<List<TeamModel>> Get();
+        Task<IEnumerable<TeamModel>> Get();
         Task<TeamModel> Get(int id);
         Task<TeamModel> Create(TeamModel model);
         Task Update(TeamModel model);

@@ -13,7 +13,7 @@ namespace API.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<List<TeamModel>> Get()
+        public async Task<IEnumerable<TeamModel>> Get()
         {
             return await dbContext.Teams.ToListAsync();
         }

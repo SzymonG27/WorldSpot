@@ -12,7 +12,7 @@ namespace API.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<List<CommentModel>> Get()
+        public async Task<IEnumerable<CommentModel>> Get()
         {
             return await dbContext.Comments.ToListAsync();
         }

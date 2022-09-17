@@ -12,7 +12,7 @@ namespace API.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<List<EventModel>> Get()
+        public async Task<IEnumerable<EventModel>> Get()
         {
             return await dbContext.Events.ToListAsync();
         }

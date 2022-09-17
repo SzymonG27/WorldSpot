@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    public class RouteModel
+    public class RouteModel //stricte do wyścigów na aplikacje mobilne, będą się robić punkty na mapie
     {
         [Key]
         public int Id { get; set; }

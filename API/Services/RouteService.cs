@@ -12,7 +12,7 @@ namespace API.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<List<RouteModel>> Get()
+        public async Task<IEnumerable<RouteModel>> Get()
         {
             return await dbContext.Routes.ToListAsync();
         }
