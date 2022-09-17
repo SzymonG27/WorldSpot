@@ -1,6 +1,7 @@
 using API.Data;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
+using Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,10 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("WS_Data")));
 
+builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WS_Data"))); //Wstrzykiwanie kontekstu z projektu "Server"
+
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IEventTeamRelationService, EventTeamRelationService>();
@@ -24,6 +29,7 @@ builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ITeamUsersInviteService, TeamUsersInviteService>();
 builder.Services.AddScoped<ITeamUsersRelationService, TeamUsersRelationService>();
+
 
 var app = builder.Build();
 

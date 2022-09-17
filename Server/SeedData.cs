@@ -91,6 +91,7 @@ namespace Server
                             new Claim(JwtClaimTypes.Name, "Szymon Gajdziński"),
                             new Claim(JwtClaimTypes.GivenName, "Szymon"),
                             new Claim(JwtClaimTypes.FamilyName, "Gajdziński"),
+                            new Claim(JwtClaimTypes.Role, "RCON"),
                             new Claim("Photo", ""), //Puste, nie ma zdjęcia, będzie standardowe
                             new Claim("DateOfJoin", DateTime.UtcNow.ToString())
 
