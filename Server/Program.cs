@@ -41,6 +41,8 @@ builder.Services.AddIdentityServer()
     .AddDeveloperSigningCredential()
     .AddAspNetIdentity<AppUser>();
 
+builder.Services.AddControllersWithViews();
+
 //builder.Services.AddLogging();
 
 var app = builder.Build();
