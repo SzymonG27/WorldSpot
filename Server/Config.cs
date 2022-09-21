@@ -33,7 +33,7 @@ namespace Server
            {
                 new Client
                 {
-                    ClientId = "m2m.client",    //maszyna - maszyna
+                    ClientId = "m2m.client",    //serwer - serwer
                     ClientName = "Client Credentials Client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("ClientSecret1".Sha256()) },

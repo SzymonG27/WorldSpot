@@ -9,7 +9,7 @@ namespace API.Models
     public class TeamUsersInviteModel
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public int TeamId { get; set; }
         public int WhoApply { get; set; } //0 - Team zaprasza, 1 - Użytkownik chce dołączyć
     }

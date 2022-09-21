@@ -9,5 +9,7 @@ namespace API.Services
         Task<TeamModel> Create(TeamModel model);
         Task Update(TeamModel model);
         Task Delete(int id);
+        Task<bool> RelationWithUser(string userId);
+        Task<bool> IsTheSameName(string name);
     }
 }

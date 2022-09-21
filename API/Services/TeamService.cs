@@ -45,5 +45,25 @@ namespace API.Services
                 await dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task<bool> RelationWithUser(string userId)
+        {
+            var isUserInRecord = await dbContext.Teams.FirstOrDefaultAsync(p => p.FounderId == userId);
+            if (isUserInRecord != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> IsTheSameName(string name)
+        {
+            var isNameInDb = await dbContext.Teams.FirstOrDefaultAsync(p => p.Name == name);
+            if (isNameInDb != null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
