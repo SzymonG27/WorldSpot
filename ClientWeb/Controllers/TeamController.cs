@@ -153,5 +153,56 @@ namespace ClientWeb.Controllers
                 return View(teamsModel);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id, string returnUrl)
+        {
+            var token = await tokenService.GetToken("WorldSpotAPI.read");
+
+            if (id <= 0)
+            {
+                TempData["Fail"] = "Wystąpił problem! Spróbuj ponownie później";
+                if (returnUrl != null)
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToAction("Index", "Home");
+            }
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(configuration["apiUrl"]);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
+                client.SetBearerToken(tokenResponse.AccessToken);
+
+                var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var response = await client.GetAsync("/api/Team/" + id);
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Fail"] = "Wystąpił problem! Spróbuj ponownie później";
+                    if (returnUrl != null)
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    TempData["Fail"] = "Nie znaleziono teamu o takim id";
+                    if (returnUrl != null)
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
+                var responseString = await response.Content.ReadAsStringAsync();
+                var team = JsonConvert.DeserializeObject<TeamModel>(responseString);
+                return View(team);
+            }
+        }
     }
 }

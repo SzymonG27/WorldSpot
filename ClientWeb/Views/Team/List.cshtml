@@ -76,13 +76,13 @@
                 @if (item.FounderId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
                 {
                     @Html.ActionLink("Edytuj team", "Edit", new { /* id=item.PrimaryKey */ }) <span>|</span>
-                    @Html.ActionLink("Szczegóły", "Details", new { /* id=item.PrimaryKey */ }) <span>|</span>
+                    @Html.ActionLink("Szczegóły", "Details", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
                     @Html.ActionLink("Usuń team", "Delete", new { /* id=item.PrimaryKey */ }) <span>|</span>
                     @Html.ActionLink("Czat teamowy", "Chat", new { /* id=item.PrimaryKey */ })
                 }
                 else
                 {
-                    @Html.ActionLink("Szczegóły", "Details", new { /* id=item.PrimaryKey */ }) <span>|</span>
+                    @Html.ActionLink("Szczegóły", "Details", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
                     @Html.ActionLink("Wyjdź z teamu", "Leave", new { /* id=item.PrimaryKey */ }) <span>|</span>
                     @Html.ActionLink("Czat teamowy", "Chat", new { /* id=item.PrimaryKey */ })
                 }
