@@ -56,7 +56,7 @@ namespace API.Controllers
         public async Task<ActionResult> ValidateTeam(string userId, string teamName)
         {
             var isUserIdDuplicated = await teamService.RelationWithUser(userId);
-            if (isUserIdDuplicated == false)
+            if (isUserIdDuplicated == true)
             {
                 return Problem("Jeden użytkownik może mieć tylko 1 team", statusCode: (int)HttpStatusCode.Conflict);
             }
