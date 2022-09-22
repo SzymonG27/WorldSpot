@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ClientWeb.Models.TeamUsersRelationModel>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TeamId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rank)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeamId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rank)
+            </td>
+            <td>
+                @Html.ActionLink("Profil użytkownika", "Details", "Account", new { /* id=item.PrimaryKey */ }) |
+                <form asp-action="Delete" method="post" id="deleteUser">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                    <a href="#" onclick="document.getElementById('deleteUser').submit()">Usuń użytkownika</a>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -136,7 +136,12 @@ namespace ClientWeb.Controllers
                 {
                     if (userId == teamRel.UserId)
                     {
-                        teamsModel.Add(teams.FirstOrDefault(r => r.Id == teamRel.Id)); //Dodawanie do wyświetlanych teamów, w których użytkownik jest
+                        var add = teams.FirstOrDefault(r => r.Id == teamRel.TeamId);
+                        if (add == null)
+                        {
+                            continue;
+                        }
+                        teamsModel.Add(add); //Dodawanie do wyświetlanych teamów, w których użytkownik jest
                     }
                 }
 
@@ -202,6 +207,89 @@ namespace ClientWeb.Controllers
                 var responseString = await response.Content.ReadAsStringAsync();
                 var team = JsonConvert.DeserializeObject<TeamModel>(responseString);
                 return View(team);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id, string returnUrl)
+        {
+            var token = await tokenService.GetToken("WorldSpotAPI.read");
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(configuration["apiUrl"]);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
+                client.SetBearerToken(tokenResponse.AccessToken);
+
+                var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var response = await client.GetAsync("/api/Team/" + id);
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Fail"] = "Wystąpił problem! Spróbuj ponownie później";
+                    if (returnUrl != null)
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var responseString = await response.Content.ReadAsStringAsync();
+                var team = JsonConvert.DeserializeObject<TeamModel>(responseString);
+
+                if (userId != team.FounderId)
+                {
+                    TempData["Fail"] = "Nie jesteś właścicielem teamu! Nie możesz go edytować";
+                    if (returnUrl != null)
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View(team);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(TeamModel model)
+        {
+            var token = await tokenService.GetToken("WorldSpotAPI.read");
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(configuration["apiUrl"]);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
+                client.SetBearerToken(tokenResponse.AccessToken);
+
+                var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                if (userId != model.FounderId)  //Powielone sprawdzenie
+                {
+                    TempData["Fail"] = "Nie jesteś właścicielem teamu! Nie możesz go edytować";
+                    return RedirectToAction("List");
+                }
+                var teamValues = JsonConvert.SerializeObject(model);
+                var buffer = Encoding.UTF8.GetBytes(teamValues);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var response = await client.PutAsync("/api/Team", byteContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Fail"] = "Wystąpił problem! Spróbuj ponownie później";
+                    return RedirectToAction("List");
+                }
+
+                TempData["Success"] = "Pomyślnie edytowano dane teamu";
+                return RedirectToAction("Details");
             }
         }
     }
