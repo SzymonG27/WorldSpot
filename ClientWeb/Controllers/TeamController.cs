@@ -292,5 +292,63 @@ namespace ClientWeb.Controllers
                 return RedirectToAction("Details");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id, string returnUrl)
+        {
+            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(configuration["apiUrl"]);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
+                client.SetBearerToken(tokenResponse.AccessToken);
+
+                var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var checkTeam = await client.GetAsync("/api/Team/" + id); //Sprawdzamy czy użytkownik jest właścicielem teamu
+                if (!checkTeam.IsSuccessStatusCode)
+                {
+                    TempData["Fail"] = "Wystąpił problem! Spróbuj ponownie później";
+                    return RedirectToAction("List");
+                }
+                var checkTeamString = await checkTeam.Content.ReadAsStringAsync();
+                var team = JsonConvert.DeserializeObject<TeamModel>(checkTeamString);
+
+                if (team.FounderId != userId)
+                {
+                    TempData["Fail"] = "Nie jesteś właścicielem teamu! Nie możesz go usunąć";
+                    return RedirectToAction("List");
+                }
+
+                return View(team);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(configuration["apiUrl"]);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
+                client.SetBearerToken(tokenResponse.AccessToken);
+
+                var response = await client.DeleteAsync("/api/Team/" + id);
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Fail"] = "Wystąpił błąd! Spróbuj ponownie później";
+                    return RedirectToAction("List");
+                }
+                TempData["Success"] = "Team został pomyślnie usunięty!";
+                return RedirectToAction("Index", "Home");
+            }
+        }
     }
 }

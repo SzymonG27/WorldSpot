@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.Rank)
             </td>
             <td>
-                @Html.ActionLink("Profil użytkownika", "Details", "Account", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Profil użytkownika", "Details", "Account", new { userId = item.UserId }) |
                 <form asp-action="Delete" method="post" id="deleteUser">
                     <input type="hidden" name="id" value="@item.Id" />
                     <input type="hidden" name="returnUrl" value="@Context.Request.Path" />

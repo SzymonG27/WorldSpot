@@ -78,13 +78,17 @@
                     @Html.ActionLink("Edytuj team", "Edit", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
                     @Html.ActionLink("Zarządzaj członkami", "List", "TeamUser", new {teamId = item.Id, ReturnUrl = Context.Request.Path.Value}) <span>|</span>
                     @Html.ActionLink("Szczegóły", "Details", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
-                    @Html.ActionLink("Usuń team", "Delete", new { /* id=item.PrimaryKey */ }) <span>|</span>
+                    @Html.ActionLink("Usuń team", "Delete", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
                     @Html.ActionLink("Czat teamowy", "Chat", new { /* id=item.PrimaryKey */ })
                 }
                 else
                 {
                     @Html.ActionLink("Szczegóły", "Details", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
-                    @Html.ActionLink("Wyjdź z teamu", "Leave", new { /* id=item.PrimaryKey */ }) <span>|</span>
+                    <form asp-action="Delete" method="post" id="deleteUser">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                        <a href="#" onclick="document.getElementById('deleteUser').submit()">Opuść team</a>
+                    </form> <span>|</span>
                     @Html.ActionLink("Czat teamowy", "Chat", new { /* id=item.PrimaryKey */ })
                 }
             </td>

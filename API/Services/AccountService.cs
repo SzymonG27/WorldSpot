@@ -16,5 +16,10 @@ namespace API.Services
         {
             return await dbContext.Users.ToListAsync();
         }
+
+        public async Task<AppUser> Get(string id)
+        {
+            return await dbContext.Users.SingleOrDefaultAsync(t => t.Id == id);
+        }
     }
 }

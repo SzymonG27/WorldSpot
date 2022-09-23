@@ -19,5 +19,11 @@ namespace API.Controllers
         {
             return await accountService.Get();
         }
+
+        [HttpGet("{id}")]
+        public async Task<AppUser> Get(string id)
+        {
+            return await accountService.Get(id);
+        }
     }
 }
