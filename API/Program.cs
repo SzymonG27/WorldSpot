@@ -1,4 +1,5 @@
 using API.Data;
+using API.Hubs;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
@@ -29,13 +30,17 @@ builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ITeamUsersInviteService, TeamUsersInviteService>();
 builder.Services.AddScoped<ITeamUsersRelationService, TeamUsersRelationService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<ChatHub>("/chathub");
 
 app.MapControllers();
 

@@ -21,9 +21,9 @@ builder.Services.AddAuthentication(opt =>
 {
     opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     opt.SignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
-    opt.Authority = builder.Configuration["InteractiveServerSettings:AuthorityUrl"];
-    opt.ClientId = builder.Configuration["InteractiveServerSettings:ClientId"];
-    opt.ClientSecret = builder.Configuration["InteractiveServerSettings:ClientSecret"];
+    opt.Authority = builder.Configuration["InteractiveServiceSettings:AuthorityUrl"];
+    opt.ClientId = builder.Configuration["InteractiveServiceSettings:ClientId"];
+    opt.ClientSecret = builder.Configuration["InteractiveServiceSettings:ClientSecret"];
 
     opt.ResponseType = "code";
     opt.SaveTokens = true;

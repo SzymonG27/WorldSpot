@@ -21,7 +21,10 @@ namespace ClientWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> List(int teamId, string returnUrl)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             using (var client = new HttpClient())
             {
@@ -73,7 +76,11 @@ namespace ClientWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, string returnUrl)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(configuration["apiUrl"]);

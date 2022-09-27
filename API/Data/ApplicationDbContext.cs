@@ -23,6 +23,8 @@ namespace API.Data
         public DbSet<TeamModel> Teams { get; set; }
         public DbSet<TeamUsersInviteModel> TeamUsersInvites { get; set; }
         public DbSet<TeamUsersRelationModel> TeamUsersRelations { get; set; }
+        public DbSet<ChatModel> Chats { get; set; }
+        public DbSet<MessageModel> Messages { get; set; }
 
     }
 }

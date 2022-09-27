@@ -4,21 +4,21 @@ using Server;
 using Server.Data;
 using Server.Models;
 
-var seedData = args.Contains("/seed");
-if (seedData == true)
-{
-    args = args.Except(new[] { "/seed" }).ToArray();
-}
+//var seedData = args.Contains("/seed");
+//if (seedData == true)
+//{
+    //args = args.Except(new[] { "/seed" }).ToArray();
+//}
 
 var builder = WebApplication.CreateBuilder(args);
 
 var dataConnectionString = builder.Configuration.GetConnectionString("WS_Data");
 var assembly = typeof(Program).Assembly.GetName().Name;
 
-if (seedData == true)
-{
-    SeedData.EnsureSeedData(dataConnectionString);
-}
+//if (seedData == true)
+//{
+    //SeedData.EnsureSeedData(dataConnectionString);
+//}
 
 builder.Services.AddMvc();
 

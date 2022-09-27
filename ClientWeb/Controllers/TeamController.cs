@@ -35,7 +35,6 @@ namespace ClientWeb.Controllers
             {
                 return View(model);
             }
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(configuration["apiUrl"]);
@@ -84,7 +83,10 @@ namespace ClientWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> List(string returnUrl)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             using (var client = new HttpClient())
             {
@@ -162,7 +164,10 @@ namespace ClientWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id, string returnUrl)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             if (id <= 0)
             {
@@ -183,7 +188,7 @@ namespace ClientWeb.Controllers
                 var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
                 client.SetBearerToken(tokenResponse.AccessToken);
 
-                var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                //var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 var response = await client.GetAsync("/api/Team/" + id);
                 if (!response.IsSuccessStatusCode)
@@ -213,7 +218,10 @@ namespace ClientWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id, string returnUrl)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             using (var client = new HttpClient())
             {
@@ -257,7 +265,6 @@ namespace ClientWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(TeamModel model)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
 
             using (var client = new HttpClient())
             {
@@ -296,7 +303,11 @@ namespace ClientWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id, string returnUrl)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(configuration["apiUrl"]);
@@ -330,7 +341,6 @@ namespace ClientWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var token = await tokenService.GetToken("WorldSpotAPI.read");
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(configuration["apiUrl"]);
