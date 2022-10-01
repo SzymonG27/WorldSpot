@@ -1,5 +1,6 @@
 ﻿using ClientWeb.Models;
 using ClientWeb.Services;
+using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -12,7 +13,7 @@ namespace ClientWeb.Controllers
 {
     public class ChatController : Controller
     {
-        private HubConnection hubConnection;
+        //private HubConnection hubConnection;
         private readonly ITokenService tokenService;
         private readonly IConfiguration configuration;
         public List<string> messagesList = new List<string>();
@@ -24,7 +25,7 @@ namespace ClientWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int id, string returnUrl)
+        public async Task<IActionResult> Index(int id, string returnUrl) //tutaj id to id teamu, do którego chat jest przypisany
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -71,7 +72,7 @@ namespace ClientWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMessage(int chatId, string message)
+        public async Task<IActionResult> CreateMessage(int chatId, int teamId, string message)
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -79,15 +80,7 @@ namespace ClientWeb.Controllers
                 return RedirectToAction("Login", "Account");
             }
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var userName = User.Identity.Name;
-            var messModel = new MessageModel
-            {
-                ChatModelId = chatId,
-                Message = message,
-                UserId = userId,
-                UserName = userName,
-                CreatedDate = DateTime.Now,
-            };
+
 
             using (var client = new HttpClient())
             {
@@ -98,18 +91,30 @@ namespace ClientWeb.Controllers
                 var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
                 client.SetBearerToken(tokenResponse.AccessToken);
 
+                
+
+                var getUser = await client.GetAsync("api/Account/" + userId);
+                var user = JsonConvert.DeserializeObject<AppUserModel>(await getUser.Content.ReadAsStringAsync());
+                var messModel = new MessageModel
+                {
+                    ChatModelId = chatId,
+                    Message = message,
+                    UserId = userId,
+                    UserName = user.UserName,
+                    CreatedDate = DateTime.Now,
+                };
+
                 var messJson = JsonConvert.SerializeObject(messModel);
                 var buffer = Encoding.UTF8.GetBytes(messJson);
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
                 var response = await client.PostAsync("/api/Message", byteContent);
                 if (!response.IsSuccessStatusCode)
                 {
                     TempData["Fail"] = "Wystąpił problem i wiadomość nie została wysłana";
                 }
             }
-            return RedirectToAction("Index", new { id = chatId });
+            return RedirectToAction("Index", new { id = teamId });
         }
     }
 }
