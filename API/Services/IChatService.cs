@@ -6,6 +6,7 @@ namespace API.Services
     {
         Task<IEnumerable<ChatModel>> Get();
         Task<ChatModel> Get(int id);
+        Task<ChatModel> GetFromTeam(int teamId);
         Task<ChatModel> Create(ChatModel model);
         Task Update(ChatModel model);
         Task Delete(int id);

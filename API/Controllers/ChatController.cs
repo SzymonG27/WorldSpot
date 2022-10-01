@@ -7,7 +7,6 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IChatService chatService;
@@ -26,6 +25,17 @@ namespace API.Controllers
         public async Task<ChatModel> Get(int id)
         {
             return await chatService.Get(id);
+        }
+
+        [HttpGet("GetFromTeam/{teamId}")]
+        public async Task<ActionResult<ChatModel>> GetFromTeam(int teamId)
+        {
+            var isExists = await chatService.GetFromTeam(teamId);
+            if (isExists == null)
+            {
+                return NotFound();
+            }
+            return isExists;
         }
 
         [HttpPost]

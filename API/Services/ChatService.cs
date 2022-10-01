@@ -21,7 +21,17 @@ namespace API.Services
         {
             return await dbContext.Chats
                 .Include(x => x.Messages)
+                .Include(x => x.Users)
                 .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        public async Task<ChatModel> GetFromTeam(int teamId)
+        {
+            var check = await dbContext.Chats
+                .Include(x => x.Messages)
+                .Include(x => x.Users)
+                .FirstOrDefaultAsync(t => t.TeamId == teamId);
+            return check;
         }
 
         public async Task<ChatModel> Create(ChatModel model)

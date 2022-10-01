@@ -79,7 +79,7 @@
                     @Html.ActionLink("Zarządzaj członkami", "List", "TeamUser", new {teamId = item.Id, ReturnUrl = Context.Request.Path.Value}) <span>|</span>
                     @Html.ActionLink("Szczegóły", "Details", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
                     @Html.ActionLink("Usuń team", "Delete", new { id = item.Id, ReturnUrl = Context.Request.Path.Value }) <span>|</span>
-                    @Html.ActionLink("Czat teamowy", "Chat", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Czat teamowy", "Index", "Chat", new { id=item.Id, ReturnUrl = Context.Request.Path.Value })
                 }
                 else
                 {
@@ -89,7 +89,7 @@
                         <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
                         <a href="#" onclick="document.getElementById('deleteUser').submit()">Opuść team</a>
                     </form> <span>|</span>
-                    @Html.ActionLink("Czat teamowy", "Chat", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Czat teamowy", "Index", "Chat", new { id=item.Id, ReturnUrl = Context.Request.Path.Value })
                 }
             </td>
         </tr>

@@ -65,6 +65,31 @@ namespace ClientWeb.Controllers
                 HttpResponseMessage response = await client.PostAsync("api/Team", byteContent); //Dodawanie teamu do bazy
                 if (response.IsSuccessStatusCode)
                 {
+                    var responseContent = JsonConvert.DeserializeObject<TeamModel>(await response.Content.ReadAsStringAsync());
+
+                    //Tworzymy relacje teamu z użytkownikiem
+                    var relationJson = JsonConvert.SerializeObject(new TeamUsersRelationModel { 
+                        TeamId = responseContent.Id,
+                        UserId = userId
+                    });
+                    var bufferRelation = Encoding.UTF8.GetBytes(relationJson);
+                    var byteContentRelation = new ByteArrayContent(bufferRelation);
+                    byteContentRelation.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    var createTeam = await client.PostAsync("/api/TeamUsersRelation", byteContentRelation);
+                    if (!createTeam.IsSuccessStatusCode)
+                    {
+                        //TODO: Jak wyskoczy błąd usuwa stworzony team
+                        TempData["Fail"] = "Nie dodano użytkownika do relacji! Skontaktuj się z administratorem strony";
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                    //Tworzymy czat w bazie danych dla teamu
+                    var chat = JsonConvert.SerializeObject(new ChatModel { TeamId = responseContent.Id });
+                    var chatBuffer = Encoding.UTF8.GetBytes(chat);
+                    var chatByteContent = new ByteArrayContent(chatBuffer);
+                    chatByteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    HttpResponseMessage createChat = await client.PostAsync("/api/Chat", chatByteContent); //Musi być success dlatego bez sprawdzenia
+
                     TempData["Success"] = "Team został stworzony pomyślnie";
 
                     object returnUrl = string.Empty;
@@ -140,6 +165,10 @@ namespace ClientWeb.Controllers
                     {
                         var add = teams.FirstOrDefault(r => r.Id == teamRel.TeamId);
                         if (add == null)
+                        {
+                            continue;
+                        }
+                        if (teamsModel.Contains(add)) //Sprawdza czy team został już dodany do listy (właściciel)
                         {
                             continue;
                         }

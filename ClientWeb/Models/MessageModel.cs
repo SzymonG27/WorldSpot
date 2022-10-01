@@ -1,4 +1,4 @@
-﻿namespace API.Models
+﻿namespace ClientWeb.Models
 {
     public class MessageModel
     {

@@ -1,0 +1,20 @@
+﻿@model ChatModel
+@{
+    ViewData["Title"] = "Chat teamowy";
+}
+
+<div class="chat-body">
+    @foreach (var message in Model.Messages)
+    {
+        <div class="message">
+            <div class="user-name">@message.UserName: </div>
+            <p class="message-content">@message.Message </p>
+            <p class="message-date">@message.CreatedDate</p>
+        </div>
+    }
+</div>
+<form asp-controller="Chat" asp-action="CreateMessage" class="form-messagesend" class="chat-submit">
+    <input type="hidden" name="chatId" value="@Model.Id" />
+    <input type="text" name="Message" />
+    <button type="submit">Wyślij wiadomość</button>
+</form>

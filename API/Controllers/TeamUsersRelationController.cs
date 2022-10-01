@@ -29,6 +29,17 @@ namespace API.Controllers
             return await teamUsersRelationService.Get(id);
         }
 
+        [HttpGet("Check/{teamId}&{userId}")]
+        public async Task<ActionResult<TeamUsersRelationModel>> GetRelation(int teamId, string userId)
+        {
+            var isExists = await teamUsersRelationService.GetRelation(teamId, userId);
+            if (isExists == null)
+            {
+                return NotFound();
+            }
+            return isExists;
+        }
+
         [HttpPost]
         public async Task<ActionResult<TeamUsersRelationModel>> Post([FromBody] TeamUsersRelationModel model)
         {
@@ -51,5 +62,6 @@ namespace API.Controllers
             await teamUsersRelationService.Delete(relationToDelete.Id);
             return NoContent();
         }
+
     }
 }

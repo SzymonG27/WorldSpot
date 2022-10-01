@@ -22,6 +22,11 @@ namespace API.Services
             return await dbContext.TeamUsersRelations.SingleOrDefaultAsync(t => t.Id == id);
         }
 
+        public async Task<TeamUsersRelationModel> GetRelation(int teamId, string userId)
+        {
+            return await dbContext.TeamUsersRelations.FirstOrDefaultAsync(t => t.TeamId == teamId && t.UserId == userId);
+        }
+
         public async Task<TeamUsersRelationModel> Create(TeamUsersRelationModel model)
         {
             dbContext.TeamUsersRelations.Add(model);
