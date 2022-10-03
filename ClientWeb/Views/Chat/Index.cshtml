@@ -13,9 +13,85 @@
         </div>
     }
 </div>
-<form asp-controller="Chat" asp-action="CreateMessage" class="form-messagesend" class="chat-submit">
+<form asp-controller="Chat" asp-action="CreateMessage" onsubmit="sendMessage(event)" class="form-messagesend" class="chat-submit">
     <input type="hidden" name="chatId" value="@Model.Id" />
     <input type="hidden" name="teamId" value="@Model.TeamId" />
     <input type="text" name="Message" />
     <button type="submit">Wyślij wiadomość</button>
 </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        console.log('test');
+        var connection = new signalR.HubConnectionBuilder()
+                            .withUrl("/chathub")
+                            .build();
+        
+        var _connectionId = "";
+        
+        connection.on("ReceiveMessage", function(data) {
+            console.log(data);
+            var message = document.createElement("div");
+            message.classList.add("message");
+
+            var userName = document.createElement("div");
+            userName.classList.add("user-name");
+            userName.appendChild(document.createTextNode(data.userName));
+
+            var content = document.createElement("p");
+            content.classList.add("message-content");
+            content.appendChild(document.createTextNode(data.message));
+
+            var date = document.createElement("p");
+            date.classList.add("message-date");
+            date.appendChild(document.createTextNode(data.createdDate));
+
+            message.appendChild(userName);
+            message.appendChild(content);
+            message.appendChild(date);
+
+            document.querySelector(".chat-body").append(message)
+        })
+
+
+
+        var joinChat = function() {
+            axios.post('/Chat/JoinChat/' + _connectionId + '/@Model.Id', null)
+                .then(function() {
+                    console.log("Dołączono do chatu teamowego.");
+                })
+                .catch(function(err) {
+                    console.err("Nie udało się dołączyć do chatu, ", err);
+                })
+        }
+
+        connection.start()
+            .then(function() {
+                connection.invoke('getConnectionId')
+                    .then(function(connectionId) {
+                        _connectionId = connectionId;
+                        joinChat();
+                    })
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+
+
+        var sendMessage = function(event) {
+            event.preventDefault();
+            var data = new FormData(event.target);
+
+            axios.post('Chat/SendMessage', data)
+                .then(function(res) {
+                    console.log("Wiadomość wysłana");
+                })
+                .catch(function(erro) {
+                    console.err("Wiadomość nie została wysłana", erro)
+                })
+        }
+
+
+    </script>

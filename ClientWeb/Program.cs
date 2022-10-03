@@ -1,3 +1,4 @@
+using ClientWeb.Hubs;
 using ClientWeb.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -30,6 +31,8 @@ builder.Services.AddAuthentication(opt =>
     opt.GetClaimsFromUserInfoEndpoint = true;
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,6 +50,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<ChatHub>("/chathub");
 
 app.MapControllerRoute(
     name: "default",
