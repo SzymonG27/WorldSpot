@@ -180,7 +180,14 @@ namespace ClientWeb.Controllers
                 return RedirectToAction("Index", new { id = teamId });
             }
 
-            await hubContext.Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", messModel);
+            await hubContext.Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", new
+            {
+                ChatModelId = messModel.ChatModelId,
+                Message = messModel.Message,
+                UserId = messModel.UserId,
+                UserName = messModel.UserName + ": ",
+                CreatedDate = messModel.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")
+            });
             return Ok();
         }
     }
