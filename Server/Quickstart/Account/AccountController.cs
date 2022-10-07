@@ -13,9 +13,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Server.Data;
 using Server.Models;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IdentityServerHost.Quickstart.UI
@@ -26,6 +29,7 @@ namespace IdentityServerHost.Quickstart.UI
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppIdentityDbContext _dbContext;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -34,6 +38,7 @@ namespace IdentityServerHost.Quickstart.UI
         public AccountController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
+            AppIdentityDbContext dbContext,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
@@ -41,6 +46,7 @@ namespace IdentityServerHost.Quickstart.UI
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _dbContext = dbContext;
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
@@ -147,6 +153,8 @@ namespace IdentityServerHost.Quickstart.UI
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
+
+        
 
         
         /// <summary>

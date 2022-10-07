@@ -122,6 +122,7 @@ namespace ClientWeb.Controllers
                 var tokenResponse = await tokenService.GetToken("WorldSpotAPI.read");
                 client.SetBearerToken(tokenResponse.AccessToken);
 
+
                 var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 var response = await client.GetAsync("/api/Team");

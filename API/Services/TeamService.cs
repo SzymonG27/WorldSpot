@@ -15,7 +15,8 @@ namespace API.Services
 
         public async Task<IEnumerable<TeamModel>> Get()
         {
-            return await dbContext.Teams.ToListAsync();
+            var teams = await dbContext.Teams.ToListAsync();
+            return teams;
         }
 
         public async Task<TeamModel> Get(int id)

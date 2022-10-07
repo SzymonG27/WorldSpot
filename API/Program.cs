@@ -1,14 +1,22 @@
 using API.Data;
 using API.Hubs;
 using API.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
+using Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+});
 
 builder.Services.AddAuthentication("Bearer")
     .AddIdentityServerAuthentication("Bearer", opt =>
@@ -34,6 +42,12 @@ builder.Services.AddScoped<ITeamUsersInviteService, TeamUsersInviteService>();
 builder.Services.AddScoped<ITeamUsersRelationService, TeamUsersRelationService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+
+builder.Services.AddIdentityCore<AppUser>()
+            .AddRoles<IdentityRole>()
+            .AddUserManager<UserManager<AppUser>>()
+            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddDefaultTokenProviders();
 
 builder.Services.AddSignalR();
 
